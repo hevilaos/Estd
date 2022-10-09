@@ -2,10 +2,7 @@
 // intelisense so that VS code can recognize cypress functionalities 
 
 describe('Our first suite', () => {
-
     it('passes', () => {
-        if('first test', () => {
-
             cy.visit('http://localhost:4200/')
             cy.contains('Forms').click()
             cy.contains('Form Layouts').click()
@@ -39,7 +36,7 @@ describe('Our first suite', () => {
     
             //the most recommended way by Cypress: using your own attributes 
             cy.get('[data-cy="imputEmail1"]')
-    });
-});
+    
+})
 })
 
