@@ -71,6 +71,22 @@ describe('Our first suite', () => {
         cy.contains('nb-card', 'Basic form').find('[for="exampleInputEmail1"]').should('contain', 'Email address')
         cy.contains('nb-card', 'Basic form').find('[for="exampleInputPassword1"]').should('contain', 'Password')
 
+        //cypress style for using repetitive terms (as is apperaing at cy.contains('nb-card', 'Using the Grid') and  cy.contains('nb-card', 'Basic form'))
+        cy.contains('nb-card', 'Using the Grid').then( firstForm => {
+            const emailLabelFirst = firstForm.find('[for="inputEmail1"]').text()
+            const passwordLabelFirst = firstForm.find('[for="inputPassword2"]').text()
+            expect(emailLabelFirst).to.equal('Email')
+            expect(passwordLabelFirst).to.equal('Password')
+
+            cy.contains('nb-card', 'Basic form').then( secondForm => {
+                const paswordLabelSecond = secondForm.find('[for="exampleInputPassword1"]').text()
+                expect(paswordLabelSecond).to.equal(passwordLabelFirst)
+
+                cy.wrap(secondForm).find('[for="exampleInputPassword1"]').should('contain', 'Password')
+            })
+
+        })
+
     })
 })
 
