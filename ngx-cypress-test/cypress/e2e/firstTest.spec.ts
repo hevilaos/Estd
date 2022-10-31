@@ -61,7 +61,7 @@ describe('Our first suite', () => {
         cy.contains('nb-card','Horizontal form').find('[type="email"]')
     })
 
-    it.only('then and wrap methods', () => {
+    it('then and wrap methods', () => {
         cy.visit('http://localhost:4200/')
         cy.contains('Forms').click()
         cy.contains('Form Layouts').click()
@@ -87,6 +87,48 @@ describe('Our first suite', () => {
 
         })
 
+    })
+
+    it('invoke command', ()=> {
+        cy.visit('http://localhost:4200/')
+        cy.contains('Forms').click()
+        cy.contains('Form Layouts').click()
+
+        //1 -- Verificando que existe a label para Email no Basic form
+        // e que a label diz "Email address"
+        cy.get('[for="exampleInputEmail1"]').should('contain', 'Email address')
+
+        //2 - mesma verificação de 1, só que usando a forma de chegar a um caminho transformando em parâmetro para poder reutilizar
+        cy.get('[for="exampleInputEmail1"]').then( label => {
+            expect(label.text()).to.equal('Email address')
+        })
+
+        //3 - usando comando invoke
+        cy.get('[for="exampleInputEmail1"]').invoke('text').then( text => {
+            expect(text).to.equal('Email address')
+        })
+
+        cy.contains('nb-card', 'Basic form')
+            .find('nb-checkbox')
+            .click()
+            .find('.custom-checkbox')
+            .invoke('attr', 'class')
+            //.should('contain', 'checked')
+            .then(classValue => {
+                expect(classValue).to.contain('checked')
+            })
+    })
+
+    it.only('assert property', () => {
+        cy.visit('http://localhost:4200/')
+        cy.contains('Forms').click()
+        cy.contains('Datepicker').click()
+
+        cy.contains('nb-card', 'Common Datepicker').find('input').then( input => {
+            cy.wrap(input).click()
+            cy.get('nb-calendar-day-picker').contains('17').click()
+            cy.wrap(input).invoke('prop', 'value').should('contain', 'Oct 17, 2022')
+        })
     })
 })
 
