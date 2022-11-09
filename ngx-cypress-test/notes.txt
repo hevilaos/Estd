@@ -1,0 +1,3 @@
+Some commands to remember:
+Run the project: npm start
+Run cypress: npx cypress run
