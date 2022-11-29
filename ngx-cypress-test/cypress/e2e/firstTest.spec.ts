@@ -119,15 +119,28 @@ describe('Our first suite', () => {
             })
     })
 
-    it('assert property', () => {
+    it.only('assert property', () => {
         cy.visit('http://localhost:4200/')
         cy.contains('Forms').click()
         cy.contains('Datepicker').click()
 
+        let date = new Date()
+        date.setDate(date.getDate() + 5)
+        let futureDay = date.getDate()
+        let futureMonth = date.toLocaleString('default', {month: 'short'})
+
         cy.contains('nb-card', 'Common Datepicker').find('input').then( input => {
             cy.wrap(input).click()
-            cy.get('nb-calendar-day-picker').contains('17').click()
-            cy.wrap(input).invoke('prop', 'value').should('contain', 'Oct 17, 2022')
+            cy.get('nb-calendar-navigation').invoke('attr', 'ng-reflect-date').then( dateAttribute => {
+                if(!dateAttribute.includes(futureMonth)){
+                    cy.get('[data-name="chevron-right"]').click()
+                    cy.get('nb-calendar-day-picker [class="day-cell ng-star-inserted"]').contains(futureDay).click()
+                }else{
+                    cy.get('nb-calendar-day-picker [class="day-cell ng-star-inserted"]').contains(futureDay).click()
+                }
+            })
+            //cy.get('nb-calendar-day-picker').contains('17').click()
+            //cy.wrap(input).invoke('prop', 'value').should('contain', 'Oct 17, 2022')
         })
     })
 
@@ -198,7 +211,7 @@ describe('Our first suite', () => {
         })
     })
 
-    it.only('Web tables', () => {
+    it('Web tables', () => {
         cy.visit('http://localhost:4200/')
         cy.contains('Tables & Data').click()
         cy.contains('Smart Table').click()
