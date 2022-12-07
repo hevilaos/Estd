@@ -120,27 +120,32 @@ describe('Our first suite', () => {
     })
 
     it.only('assert property', () => {
-        cy.visit('http://localhost:4200/')
-        cy.contains('Forms').click()
-        cy.contains('Datepicker').click()
-
-        let date = new Date()
-        date.setDate(date.getDate() + 5)
-        let futureDay = date.getDate()
-        let futureMonth = date.toLocaleString('default', {month: 'short'})
-
-        cy.contains('nb-card', 'Common Datepicker').find('input').then( input => {
-            cy.wrap(input).click()
+        
+        function selectDayFromCurrent(day){
+            let date = new Date()
+            date.setDate(date.getDate() + day)
+            let futureDay = date.getDate()
+            let futureMonth = date.toLocaleString('en-us', {month: 'short'})
+            let dateAssert = futureMonth+' '+futureDay+', '+date.getFullYear()
             cy.get('nb-calendar-navigation').invoke('attr', 'ng-reflect-date').then( dateAttribute => {
                 if(!dateAttribute.includes(futureMonth)){
                     cy.get('[data-name="chevron-right"]').click()
-                    cy.get('nb-calendar-day-picker [class="day-cell ng-star-inserted"]').contains(futureDay).click()
+                    selectDayFromCurrent(day)
                 }else{
                     cy.get('nb-calendar-day-picker [class="day-cell ng-star-inserted"]').contains(futureDay).click()
                 }
             })
-            //cy.get('nb-calendar-day-picker').contains('17').click()
-            //cy.wrap(input).invoke('prop', 'value').should('contain', 'Oct 17, 2022')
+            return dateAssert
+        }
+           
+        cy.visit('http://localhost:4200/')
+        cy.contains('Forms').click()
+        cy.contains('Datepicker').click()
+
+        cy.contains('nb-card', 'Common Datepicker').find('input').then( input => {
+            cy.wrap(input).click()
+            let dateAssert = selectDayFromCurrent(50)                                  
+            cy.wrap(input).invoke('prop', 'value').should('contain', dateAssert)
         })
     })
 
